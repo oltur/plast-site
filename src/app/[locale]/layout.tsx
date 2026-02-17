@@ -3,6 +3,7 @@ import { locales } from '@/lib/i18n'
 import { TranslationProvider } from '@/lib/TranslationContext'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
+import CookieConsent from '@/components/ui/CookieConsent'
 
 export function generateStaticParams() {
   return locales.map(locale => ({ locale }))
@@ -30,6 +31,7 @@ export default async function LocaleLayout({
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
+        <CookieConsent />
       </div>
     </TranslationProvider>
   )

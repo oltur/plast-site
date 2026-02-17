@@ -14,6 +14,11 @@ type Settings = {
   siteTitle?: LocalizedString
   siteDescription?: LocalizedString
   backgroundImages?: any[]
+  stats?: {
+    memberCount?: string
+    foundedYear?: number
+    ageGroups?: number
+  }
 }
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
@@ -24,7 +29,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     `*[_type == "settings"][0] {
       siteTitle,
       siteDescription,
-      backgroundImages
+      backgroundImages,
+      stats
     }`
   )
 
@@ -80,19 +86,19 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <div className="container-custom">
           <div className="grid gap-8 md:grid-cols-3">
             <div className="text-center">
-              <div className="mb-4 text-5xl font-bold text-plast-green">100+</div>
+              <div className="mb-4 text-5xl font-bold text-plast-green">{settings?.stats?.memberCount || '100+'}</div>
               <h3 className="text-lg font-semibold">
                 {locale === 'uk' ? 'Активних членів' : locale === 'de' ? 'Aktive Mitglieder' : 'Active Members'}
               </h3>
             </div>
             <div className="text-center">
-              <div className="mb-4 text-5xl font-bold text-plast-green">2021</div>
+              <div className="mb-4 text-5xl font-bold text-plast-green">{settings?.stats?.foundedYear || 2021}</div>
               <h3 className="text-lg font-semibold">
                 {locale === 'uk' ? 'Рік заснування' : locale === 'de' ? 'Gegründet' : 'Founded'}
               </h3>
             </div>
             <div className="text-center">
-              <div className="mb-4 text-5xl font-bold text-plast-green">4</div>
+              <div className="mb-4 text-5xl font-bold text-plast-green">{settings?.stats?.ageGroups || 4}</div>
               <h3 className="text-lg font-semibold">
                 {locale === 'uk' ? 'Вікові групи' : locale === 'de' ? 'Altersgruppen' : 'Age Groups'}
               </h3>

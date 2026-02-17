@@ -9,7 +9,12 @@
     "lint": "next lint",
     "format": "prettier --write .",
     "type-check": "tsc --noEmit",
-    "upload-bg-images": "tsx scripts/upload-background-images.ts"
+    "upload-bg-images": "tsx scripts/upload-background-images.ts",
+    "create-sample-activities": "tsx scripts/create-sample-activities.ts",
+    "create-sample-content": "tsx scripts/create-sample-events-news.ts",
+    "update-contact-info": "tsx scripts/update-contact-info.ts",
+    "update-meetings-info": "tsx scripts/update-meetings-info.ts",
+    "create-legal-pages": "tsx scripts/create-legal-pages.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

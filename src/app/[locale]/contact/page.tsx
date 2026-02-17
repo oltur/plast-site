@@ -1,13 +1,18 @@
 import { Mail, Phone, MapPin, Facebook, Instagram } from 'lucide-react'
 import RotatingBackground from '@/components/ui/RotatingBackground'
+import ContactForm from '@/components/forms/ContactForm'
 import { client } from '@/lib/sanity'
 
 export default async function ContactPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
 
-  // Fetch background images from Sanity
+  // Fetch settings from Sanity
   const settings = await client.fetch(`*[_type == "settings"][0] {
-    backgroundImages
+    backgroundImages,
+    contactEmail,
+    contactPhone,
+    address,
+    socialMedia
   }`)
 
   const content = {
@@ -68,85 +73,90 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
 
             <div className="space-y-6">
               {/* Email */}
-              <div className="flex items-start space-x-4">
-                <div className="rounded-full bg-plast-green p-3 text-white">
-                  <Mail size={24} />
+              {settings?.contactEmail && (
+                <div className="flex items-start space-x-4">
+                  <div className="rounded-full bg-plast-green p-3 text-white">
+                    <Mail size={24} />
+                  </div>
+                  <div>
+                    <h3 className="mb-1 font-semibold text-gray-900">{t.email}</h3>
+                    <a
+                      href={`mailto:${settings.contactEmail}`}
+                      className="text-plast-green hover:underline"
+                    >
+                      {settings.contactEmail}
+                    </a>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="mb-1 font-semibold text-gray-900">{t.email}</h3>
-                  <a
-                    href="mailto:info@plast-duesseldorf.de"
-                    className="text-plast-green hover:underline"
-                  >
-                    info@plast-duesseldorf.de
-                  </a>
-                </div>
-              </div>
+              )}
 
               {/* Phone */}
-              <div className="flex items-start space-x-4">
-                <div className="rounded-full bg-plast-green p-3 text-white">
-                  <Phone size={24} />
+              {settings?.contactPhone && (
+                <div className="flex items-start space-x-4">
+                  <div className="rounded-full bg-plast-green p-3 text-white">
+                    <Phone size={24} />
+                  </div>
+                  <div>
+                    <h3 className="mb-1 font-semibold text-gray-900">{t.phone}</h3>
+                    <a
+                      href={`tel:${settings.contactPhone.replace(/\s/g, '')}`}
+                      className="text-plast-green hover:underline"
+                    >
+                      {settings.contactPhone}
+                    </a>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="mb-1 font-semibold text-gray-900">{t.phone}</h3>
-                  <a
-                    href="tel:+49211123456"
-                    className="text-plast-green hover:underline"
-                  >
-                    +49 211 123456
-                  </a>
-                </div>
-              </div>
+              )}
 
               {/* Address */}
-              <div className="flex items-start space-x-4">
-                <div className="rounded-full bg-plast-green p-3 text-white">
-                  <MapPin size={24} />
+              {settings?.address && (
+                <div className="flex items-start space-x-4">
+                  <div className="rounded-full bg-plast-green p-3 text-white">
+                    <MapPin size={24} />
+                  </div>
+                  <div>
+                    <h3 className="mb-1 font-semibold text-gray-900">{t.address}</h3>
+                    <p className="text-gray-700">
+                      {settings.address[locale as keyof typeof settings.address] || settings.address.en || t.addressText}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="mb-1 font-semibold text-gray-900">{t.address}</h3>
-                  <p className="text-gray-700">{t.addressText}</p>
-                </div>
-              </div>
+              )}
             </div>
 
             {/* Social Media */}
-            <div className="mt-8">
-              <h3 className="mb-4 text-xl font-bold text-gray-900">{t.followUs}</h3>
-              <div className="flex space-x-4">
-                <a
-                  href="https://www.facebook.com/plastduesseldorf/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex h-12 w-12 items-center justify-center rounded-full bg-plast-green text-white transition hover:bg-plast-green-dark"
-                >
-                  <Facebook size={24} />
-                </a>
-                <a
-                  href="https://www.instagram.com/plast.duesseldorf/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex h-12 w-12 items-center justify-center rounded-full bg-plast-green text-white transition hover:bg-plast-green-dark"
-                >
-                  <Instagram size={24} />
-                </a>
+            {settings?.socialMedia && (settings.socialMedia.facebook || settings.socialMedia.instagram) && (
+              <div className="mt-8">
+                <h3 className="mb-4 text-xl font-bold text-gray-900">{t.followUs}</h3>
+                <div className="flex space-x-4">
+                  {settings.socialMedia.facebook && (
+                    <a
+                      href={settings.socialMedia.facebook}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex h-12 w-12 items-center justify-center rounded-full bg-plast-green text-white transition hover:bg-plast-green-dark"
+                    >
+                      <Facebook size={24} />
+                    </a>
+                  )}
+                  {settings.socialMedia.instagram && (
+                    <a
+                      href={settings.socialMedia.instagram}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex h-12 w-12 items-center justify-center rounded-full bg-plast-green text-white transition hover:bg-plast-green-dark"
+                    >
+                      <Instagram size={24} />
+                    </a>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
-          {/* Join Us Section */}
+          {/* Contact Form */}
           <div>
-            <div className="rounded-lg bg-plast-green p-8 text-white">
-              <h2 className="mb-4 text-2xl font-bold">{t.joinUs}</h2>
-              <p className="mb-6 text-lg">{t.joinText}</p>
-              <a
-                href="mailto:info@plast-duesseldorf.de?subject=Join Plast Düsseldorf"
-                className="inline-block rounded-lg bg-plast-yellow px-6 py-3 font-semibold text-gray-900 transition hover:opacity-90"
-              >
-                {locale === 'uk' ? 'Написати нам' : locale === 'de' ? 'Schreiben Sie uns' : 'Contact Us'}
-              </a>
-            </div>
+            <ContactForm locale={locale} />
           </div>
         </div>
       </div>

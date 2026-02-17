@@ -37,7 +37,7 @@ export default defineType({
     defineField({
       name: 'address',
       title: 'Address',
-      type: 'text',
+      type: 'localizedString',
     }),
     defineField({
       name: 'socialMedia',
@@ -65,6 +65,31 @@ export default defineType({
       name: 'footerText',
       title: 'Footer Text',
       type: 'localizedBlock',
+    }),
+    defineField({
+      name: 'stats',
+      title: 'Statistics',
+      type: 'object',
+      fields: [
+        {
+          name: 'memberCount',
+          title: 'Number of Active Members',
+          type: 'string',
+          description: 'E.g., "100+" or "150"',
+        },
+        {
+          name: 'foundedYear',
+          title: 'Year Founded',
+          type: 'number',
+          description: 'E.g., 2021',
+        },
+        {
+          name: 'ageGroups',
+          title: 'Number of Age Groups',
+          type: 'number',
+          description: 'E.g., 4',
+        },
+      ],
     }),
     defineField({
       name: 'backgroundImages',

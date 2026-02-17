@@ -1,104 +1,78 @@
 import RotatingBackground from '@/components/ui/RotatingBackground'
+import ImageGallery from '@/components/ui/ImageGallery'
 import { client } from '@/lib/sanity'
 import imageUrlBuilder from '@sanity/image-url'
+import { PortableText } from '@portabletext/react'
 
 const builder = imageUrlBuilder(client)
+
+type LocalizedString = {
+  uk?: string
+  de?: string
+  en?: string
+}
+
+type Activity = {
+  _id: string
+  title: LocalizedString
+  slug: { current: string }
+  description?: {
+    uk?: any[]
+    de?: any[]
+    en?: any[]
+  }
+  excerpt?: LocalizedString
+  category?: string
+  images?: any[]
+  ageGroup?: string
+  frequency?: LocalizedString
+  status: string
+}
 
 export default async function ActivitiesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
 
-  // Fetch background images from Sanity
-  const settings = await client.fetch(`*[_type == "settings"][0] {
-    backgroundImages
-  }`)
+  // Fetch activities and settings from Sanity
+  const [activities, settings] = await Promise.all([
+    client.fetch<Activity[]>(
+      `*[_type == "activity" && status == "published"] | order(order asc) {
+        _id,
+        title,
+        slug,
+        description,
+        excerpt,
+        category,
+        images,
+        ageGroup,
+        frequency,
+        status
+      }`
+    ),
+    client.fetch(`*[_type == "settings"][0] {
+      backgroundImages
+    }`),
+  ])
+
+  const localeKey = locale as keyof LocalizedString
 
   const content = {
     uk: {
       title: 'Наша діяльність',
       subtitle: 'Чим ми займаємося',
-      regular: 'Регулярні сходини',
-      regularText: 'Кожної суботи ми збираємося для навчання, ігор та підготовки до таборів.',
-      camps: 'Табори та вишколи',
-      campsText: 'Літні та зимові табори, де пластуни навчаються виживання на природі, командної роботи та лідерства.',
-      training: 'Навчання та вишколи',
-      trainingText: 'Спеціалізовані курси для провідників та старших пластунів.',
-      community: 'Громадська діяльність',
-      communityText: 'Волонтерство, допомога українській громаді в Німеччині, культурні заходи.',
-      activities: [
-        {
-          title: 'Пластові сходини',
-          description: 'Щотижневі зустрічі для всіх вікових груп',
-          when: 'Кожної суботи',
-        },
-        {
-          title: 'Літні табори',
-          description: 'Двотижневі пригоди на природі',
-          when: 'Липень-Серпень',
-        },
-        {
-          title: 'Культурні заходи',
-          description: 'Святкування українських свят та традицій',
-          when: 'Протягом року',
-        },
-      ],
+      readMore: 'Детальніше',
+      photoGallery: 'Фотогалерея',
     },
     de: {
       title: 'Unsere Aktivitäten',
       subtitle: 'Was wir tun',
-      regular: 'Regelmäßige Treffen',
-      regularText: 'Jeden Samstag treffen wir uns zum Lernen, Spielen und zur Vorbereitung auf Lager.',
-      camps: 'Lager und Schulungen',
-      campsText: 'Sommer- und Winterlager, bei denen Pfadfinder Überlebensfähigkeiten in der Natur, Teamarbeit und Führung lernen.',
-      training: 'Ausbildung und Schulungen',
-      trainingText: 'Spezialisierte Kurse für Leiter und ältere Pfadfinder.',
-      community: 'Gemeinschaftsarbeit',
-      communityText: 'Freiwilligenarbeit, Unterstützung der ukrainischen Gemeinschaft in Deutschland, kulturelle Veranstaltungen.',
-      activities: [
-        {
-          title: 'Pfadfindertreffen',
-          description: 'Wöchentliche Treffen für alle Altersgruppen',
-          when: 'Jeden Samstag',
-        },
-        {
-          title: 'Sommerlager',
-          description: 'Zweiwöchige Abenteuer in der Natur',
-          when: 'Juli-August',
-        },
-        {
-          title: 'Kulturelle Veranstaltungen',
-          description: 'Feier ukrainischer Feiertage und Traditionen',
-          when: 'Das ganze Jahr über',
-        },
-      ],
+      readMore: 'Mehr erfahren',
+      photoGallery: 'Fotogalerie',
     },
     en: {
       title: 'Our Activities',
       subtitle: 'What We Do',
-      regular: 'Regular Meetings',
-      regularText: 'Every Saturday we gather for learning, games, and preparation for camps.',
-      camps: 'Camps and Training',
-      campsText: 'Summer and winter camps where scouts learn outdoor survival skills, teamwork, and leadership.',
-      training: 'Education and Training',
-      trainingText: 'Specialized courses for leaders and senior scouts.',
-      community: 'Community Service',
-      communityText: 'Volunteering, supporting the Ukrainian community in Germany, cultural events.',
-      activities: [
-        {
-          title: 'Scout Meetings',
-          description: 'Weekly gatherings for all age groups',
-          when: 'Every Saturday',
-        },
-        {
-          title: 'Summer Camps',
-          description: 'Two-week outdoor adventures',
-          when: 'July-August',
-        },
-        {
-          title: 'Cultural Events',
-          description: 'Celebrating Ukrainian holidays and traditions',
-          when: 'Throughout the year',
-        },
-      ],
+      readMore: 'Read More',
+      photoGallery: 'Photo Gallery',
     },
   }
 
@@ -114,39 +88,54 @@ export default async function ActivitiesPage({ params }: { params: Promise<{ loc
           <p className="text-xl text-gray-600">{t.subtitle}</p>
         </div>
 
-        {/* Photo Gallery */}
-        {settings?.backgroundImages && settings.backgroundImages.length > 0 && (
-          <div className="mb-16">
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {settings.backgroundImages.map((image: any, index: number) => (
-                <div key={index} className="overflow-hidden rounded-lg shadow-lg">
-                  <img
-                    src={builder.image(image.asset).width(800).height(600).url()}
-                    alt={image.alt || 'Plast activity'}
-                    className="h-64 w-full object-cover transition hover:scale-105"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        {/* Activities */}
+        <div className="space-y-16">
+          {activities.map(activity => {
+            const title = activity.title?.[localeKey] || activity.title?.en || ''
+            const excerpt = activity.excerpt?.[localeKey] || activity.excerpt?.en || ''
+            const description = activity.description?.[localeKey]
+            const frequency = activity.frequency?.[localeKey] || activity.frequency?.en || ''
 
-        {/* Activity Schedule */}
-        <div className="rounded-lg bg-gray-50 p-8">
-          <h2 className="mb-8 text-center text-3xl font-bold text-gray-900">
-            {locale === 'uk' ? 'Розклад активностей' : locale === 'de' ? 'Aktivitätenplan' : 'Activity Schedule'}
-          </h2>
-          <div className="grid gap-6 md:grid-cols-3">
-            {t.activities.map((activity, index) => (
-              <div key={index} className="rounded-lg bg-white p-6 shadow-md">
-                <h3 className="mb-2 text-xl font-bold text-plast-green">{activity.title}</h3>
-                <p className="mb-3 text-gray-700">{activity.description}</p>
-                <div className="inline-block rounded bg-plast-yellow px-3 py-1 text-sm font-semibold text-gray-900">
-                  {activity.when}
+            // Build image URLs
+            const imageUrls = activity.images
+              ? activity.images.map(img =>
+                  builder.image(img.asset).width(1200).height(900).url()
+                )
+              : []
+
+            return (
+              <div key={activity._id} className="overflow-hidden rounded-lg bg-white shadow-lg">
+                <div className="bg-plast-green p-6">
+                  <h2 className="text-3xl font-bold text-white">{title}</h2>
+                  {frequency && (
+                    <p className="mt-2 text-plast-yellow">{frequency}</p>
+                  )}
+                </div>
+
+                <div className="p-6">
+                  {excerpt && (
+                    <p className="mb-4 text-lg text-gray-700">{excerpt}</p>
+                  )}
+
+                  {description && (
+                    <div className="prose prose-lg mb-6 max-w-none text-gray-700">
+                      <PortableText value={description} />
+                    </div>
+                  )}
+
+                  {/* Photo Gallery */}
+                  {imageUrls.length > 0 && (
+                    <div className="mt-6">
+                      <h3 className="mb-4 text-xl font-bold text-gray-900">
+                        {t.photoGallery}
+                      </h3>
+                      <ImageGallery images={imageUrls} alt={title} />
+                    </div>
+                  )}
                 </div>
               </div>
-            ))}
-          </div>
+            )
+          })}
         </div>
       </div>
     </div>
