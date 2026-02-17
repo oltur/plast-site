@@ -32,7 +32,7 @@ export default function LanguageSwitcher() {
           <Link
             key={locale}
             href={`/${locale}${pathWithoutLocale}`}
-            className={`flex h-8 w-8 items-center justify-center rounded-lg text-xl transition md:h-10 md:w-10 md:text-2xl ${
+            className={`flex h-9 w-9 items-center justify-center rounded-lg text-xl transition md:h-10 md:w-10 md:text-2xl ${
               isActive
                 ? 'bg-plast-yellow ring-2 ring-white/50'
                 : 'bg-white/10 hover:bg-white/20 active:bg-white/30'

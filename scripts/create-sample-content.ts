@@ -39,6 +39,7 @@ const sampleContent = [
   // About page
   {
     _type: 'page',
+    _id: 'page-about-us',
     title: {
       uk: 'Про нас',
       de: 'Über uns',
@@ -94,6 +95,7 @@ const sampleContent = [
   // Sample Event
   {
     _type: 'event',
+    _id: 'event-summer-camp-2026',
     title: {
       uk: 'Літній табір 2026',
       de: 'Sommerlager 2026',
@@ -126,6 +128,7 @@ const sampleContent = [
   // Sample Blog Post
   {
     _type: 'post',
+    _id: 'post-spring-gathering-2026',
     title: {
       uk: 'Успішний весняний збір 2026',
       de: 'Erfolgreiche Frühjahrsversammlung 2026',
