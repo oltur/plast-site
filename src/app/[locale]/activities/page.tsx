@@ -129,7 +129,7 @@ export default async function ActivitiesPage({ params }: { params: Promise<{ loc
                       <h3 className="mb-4 text-xl font-bold text-gray-900">
                         {t.photoGallery}
                       </h3>
-                      <ImageGallery images={imageUrls} alt={title} />
+                      <ImageGallery images={imageUrls} alt={title} locale={locale} />
                     </div>
                   )}
                 </div>
