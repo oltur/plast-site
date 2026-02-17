@@ -1,0 +1,38 @@
+{
+  "navigation": {
+    "home": "Home",
+    "about": "About Us",
+    "activities": "Activities",
+    "events": "Events",
+    "news": "News",
+    "contact": "Contact",
+    "getInvolved": "Get Involved"
+  },
+  "common": {
+    "learnMore": "Learn More",
+    "register": "Register",
+    "submit": "Submit",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "save": "Save",
+    "readMore": "Read More"
+  },
+  "hero": {
+    "title": "Plast Düsseldorf Scout Group",
+    "subtitle": "We are part of the global Ukrainian scouting organization, educating youth through outdoor activities, games, and community service.",
+    "joinUs": "Join Us",
+    "ourEvents": "Our Events"
+  },
+  "footer": {
+    "about": "About the Organization",
+    "followUs": "Follow Us",
+    "contact": "Contact Us",
+    "allRightsReserved": "All Rights Reserved",
+    "parentOrgs": "Parent Organizations",
+    "quickLinks": "Quick Links",
+    "aboutUs": "About Us",
+    "events": "Events"
+  }
+}

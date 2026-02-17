@@ -1,0 +1,38 @@
+{
+  "navigation": {
+    "home": "Startseite",
+    "about": "Über uns",
+    "activities": "Aktivitäten",
+    "events": "Veranstaltungen",
+    "news": "Nachrichten",
+    "contact": "Kontakt",
+    "getInvolved": "Mitmachen"
+  },
+  "common": {
+    "learnMore": "Mehr erfahren",
+    "register": "Anmelden",
+    "submit": "Senden",
+    "loading": "Wird geladen...",
+    "error": "Fehler",
+    "success": "Erfolgreich",
+    "cancel": "Abbrechen",
+    "save": "Speichern",
+    "readMore": "Mehr lesen"
+  },
+  "hero": {
+    "title": "Plast-Gruppe Düsseldorf",
+    "subtitle": "Wir sind Teil der weltweiten ukrainischen Pfadfinderbewegung, die junge Menschen durch Aktivitäten in der Natur, Spiele und Gemeinschaftsdienst erzieht.",
+    "joinUs": "Mitmachen",
+    "ourEvents": "Unsere Veranstaltungen"
+  },
+  "footer": {
+    "about": "Über die Organisation",
+    "followUs": "Folgen Sie uns",
+    "contact": "Kontaktieren Sie uns",
+    "allRightsReserved": "Alle Rechte vorbehalten",
+    "parentOrgs": "Dachorganisationen",
+    "quickLinks": "Schnellzugriff",
+    "aboutUs": "Über uns",
+    "events": "Veranstaltungen"
+  }
+}
