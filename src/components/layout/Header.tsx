@@ -51,7 +51,7 @@ export default function Header() {
           </div>
 
           {/* Right Side: Emblem, Language Switcher & Mobile Menu Button */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center gap-2">
             {/* Plast Düsseldorf Emblem - Hidden on mobile */}
             <div className="hidden md:block">
               <Image
@@ -65,18 +65,19 @@ export default function Header() {
             <LanguageSwitcher />
             <button
               type="button"
-              className="text-white md:hidden"
+              className="relative z-50 flex h-11 w-11 items-center justify-center rounded-lg bg-white/10 text-white transition hover:bg-white/20 active:bg-white/30 md:hidden"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle menu"
             >
-              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
           </div>
         </div>
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="border-t border-plast-green-light py-4 md:hidden">
-            <div className="flex flex-col space-y-4">
+          <div className="absolute left-0 right-0 top-20 z-50 border-t border-plast-green-light bg-plast-green py-4 shadow-lg md:hidden">
+            <div className="container-custom flex flex-col space-y-4">
               {navigation.map(item => (
                 <Link
                   key={item.href}

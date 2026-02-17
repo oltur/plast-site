@@ -19,17 +19,17 @@ export default function LanguageSwitcher() {
   const pathWithoutLocale = pathname?.replace(`/${currentLocale}`, '') || '/'
 
   return (
-    <div className="flex items-center space-x-2">
+    <div className="relative z-50 flex items-center gap-1">
       {locales.map(locale => {
         const isActive = locale === currentLocale
         return (
           <Link
             key={locale}
             href={`/${locale}${pathWithoutLocale}`}
-            className={`rounded px-2 py-1 text-sm font-medium transition ${
+            className={`rounded-lg px-3 py-2 text-sm font-semibold transition ${
               isActive
                 ? 'bg-plast-yellow text-gray-900'
-                : 'text-white hover:bg-plast-green-light'
+                : 'bg-white/10 text-white hover:bg-white/20 active:bg-white/30'
             }`}
           >
             {languageNames[locale]}
