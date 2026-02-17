@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import { client } from '@/lib/sanity'
 import imageUrlBuilder from '@sanity/image-url'
+import ImageGallery from '@/components/ui/ImageGallery'
 
 const builder = imageUrlBuilder(client)
 
@@ -114,47 +115,19 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             {locale === 'uk' ? 'Наша діяльність' : locale === 'de' ? 'Unsere Aktivitäten' : 'Our Activities'}
           </h2>
           {settings?.backgroundImages && settings.backgroundImages.length > 0 ? (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {settings.backgroundImages.map((image: any, index: number) => (
-                <div key={index} className="overflow-hidden rounded-lg shadow-lg">
-                  <img
-                    src={builder.image(image.asset).width(800).height(600).url()}
-                    alt={image.alt || 'Plast activity'}
-                    className="h-64 w-full object-cover transition hover:scale-105"
-                  />
-                </div>
-              ))}
-            </div>
+            <ImageGallery
+              images={settings.backgroundImages.map((image: any) =>
+                builder.image(image.asset).width(1200).height(900).url()
+              )}
+              alt={locale === 'uk' ? 'Пластова діяльність' : locale === 'de' ? 'Plast-Aktivität' : 'Plast activity'}
+              locale={locale}
+            />
           ) : (
-            <div className="grid gap-6 md:grid-cols-3">
-              <div className="overflow-hidden rounded-lg shadow-md">
-                <Image
-                  src="/photos/activity-1.jpg"
-                  alt={locale === 'uk' ? 'Пластові активності' : locale === 'de' ? 'Plast-Aktivitäten' : 'Plast Activities'}
-                  width={600}
-                  height={400}
-                  className="h-64 w-full object-cover transition hover:scale-105"
-                />
-              </div>
-              <div className="overflow-hidden rounded-lg shadow-md">
-                <Image
-                  src="/photos/activity-2.jpg"
-                  alt={locale === 'uk' ? 'Табір' : locale === 'de' ? 'Lager' : 'Camp'}
-                  width={600}
-                  height={400}
-                  className="h-64 w-full object-cover transition hover:scale-105"
-                />
-              </div>
-              <div className="overflow-hidden rounded-lg shadow-md">
-                <Image
-                  src="/photos/group-photo.png"
-                  alt={locale === 'uk' ? 'Наша команда' : locale === 'de' ? 'Unser Team' : 'Our Team'}
-                  width={600}
-                  height={400}
-                  className="h-64 w-full object-cover transition hover:scale-105"
-                />
-              </div>
-            </div>
+            <ImageGallery
+              images={['/photos/activity-1.jpg', '/photos/activity-2.jpg', '/photos/group-photo.png']}
+              alt={locale === 'uk' ? 'Пластова діяльність' : locale === 'de' ? 'Plast-Aktivität' : 'Plast activity'}
+              locale={locale}
+            />
           )}
         </div>
       </section>
