@@ -4,10 +4,16 @@ import { useParams, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { locales } from '@/lib/i18n'
 
-const languageNames = {
-  uk: 'УКР',
-  de: 'DEU',
-  en: 'ENG',
+const languageFlags = {
+  uk: '🇺🇦',
+  de: '🇩🇪',
+  en: '🇬🇧',
+}
+
+const languageLabels = {
+  uk: 'Українська',
+  de: 'Deutsch',
+  en: 'English',
 }
 
 export default function LanguageSwitcher() {
@@ -26,13 +32,15 @@ export default function LanguageSwitcher() {
           <Link
             key={locale}
             href={`/${locale}${pathWithoutLocale}`}
-            className={`rounded-lg px-3 py-2 text-sm font-semibold transition ${
+            className={`flex h-8 w-8 items-center justify-center rounded-lg text-xl transition md:h-10 md:w-10 md:text-2xl ${
               isActive
-                ? 'bg-plast-yellow text-gray-900'
-                : 'bg-white/10 text-white hover:bg-white/20 active:bg-white/30'
+                ? 'bg-plast-yellow ring-2 ring-white/50'
+                : 'bg-white/10 hover:bg-white/20 active:bg-white/30'
             }`}
+            title={languageLabels[locale]}
+            aria-label={languageLabels[locale]}
           >
-            {languageNames[locale]}
+            {languageFlags[locale]}
           </Link>
         )
       })}

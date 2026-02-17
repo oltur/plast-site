@@ -23,17 +23,26 @@ export default function Header() {
 
   return (
     <header className="relative z-50 bg-plast-green shadow-md">
-      <nav className="container-custom">
-        <div className="flex h-20 items-center justify-between">
-          {/* Left Logo - Plast Deutschland */}
-          <Link href={`/${locale}`} className="flex flex-shrink-0 items-center">
+      <nav className="container-header">
+        <div className="flex h-12 items-center justify-between md:h-20">
+          {/* Left Side - Logos */}
+          <Link href={`/${locale}`} className="flex flex-shrink-0 items-center gap-1 md:gap-0">
+            {/* Main Plast Deutschland Logo */}
             <Image
               src="/plast-logo.png"
               alt="Plast Deutschland"
               width={150}
               height={64}
-              className="h-16 w-auto object-contain"
+              className="h-6 w-auto object-contain md:h-16"
               priority
+            />
+            {/* Small Emblem - Visible on mobile only */}
+            <Image
+              src="/plast-emblem.jpg"
+              alt="Plast Düsseldorf"
+              width={60}
+              height={60}
+              className="h-6 w-6 rounded-full md:hidden"
             />
           </Link>
 
@@ -51,7 +60,7 @@ export default function Header() {
           </div>
 
           {/* Right Side: Emblem, Language Switcher & Mobile Menu Button */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-0.5 md:gap-2">
             {/* Plast Düsseldorf Emblem - Hidden on mobile */}
             <div className="hidden md:block">
               <Image
@@ -65,19 +74,19 @@ export default function Header() {
             <LanguageSwitcher />
             <button
               type="button"
-              className="relative z-50 flex h-11 w-11 items-center justify-center rounded-lg bg-white/10 text-white transition hover:bg-white/20 active:bg-white/30 md:hidden"
+              className="relative z-50 flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-white/10 text-white transition hover:bg-white/20 active:bg-white/30 md:hidden"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle menu"
             >
-              {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+              {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>
         </div>
 
         {/* Mobile Navigation */}
         {mobileMenuOpen && (
-          <div className="absolute left-0 right-0 top-20 z-50 border-t border-plast-green-light bg-plast-green py-4 shadow-lg md:hidden">
-            <div className="container-custom flex flex-col space-y-4">
+          <div className="absolute left-0 right-0 top-12 z-50 border-t border-plast-green-light bg-plast-green py-4 shadow-lg md:hidden md:top-20">
+            <div className="container-header flex flex-col space-y-4">
               {navigation.map(item => (
                 <Link
                   key={item.href}
