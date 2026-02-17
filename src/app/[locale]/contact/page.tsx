@@ -1,8 +1,14 @@
 import { Mail, Phone, MapPin, Facebook, Instagram } from 'lucide-react'
 import RotatingBackground from '@/components/ui/RotatingBackground'
+import { client } from '@/lib/sanity'
 
 export default async function ContactPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
+
+  // Fetch background images from Sanity
+  const settings = await client.fetch(`*[_type == "settings"][0] {
+    backgroundImages
+  }`)
 
   const content = {
     uk: {
@@ -47,7 +53,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
 
   return (
     <div className="relative py-12">
-      <RotatingBackground />
+      <RotatingBackground images={settings?.backgroundImages} />
       <div className="container-custom relative z-10">
         {/* Header */}
         <div className="mb-12 text-center">

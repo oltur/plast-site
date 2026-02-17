@@ -75,22 +75,27 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
 
   const t = content[locale as keyof typeof content] || content.uk
 
-  // Fetch events from Sanity
-  const events = await client.fetch<Event[]>(
-    `*[_type == "event" && status == "published"] | order(startDate asc) {
-      _id,
-      title,
-      slug,
-      description,
-      startDate,
-      endDate,
-      location,
-      ageGroup,
-      capacity,
-      price,
-      status
-    }`
-  )
+  // Fetch events and settings from Sanity
+  const [events, settings] = await Promise.all([
+    client.fetch<Event[]>(
+      `*[_type == "event" && status == "published"] | order(startDate asc) {
+        _id,
+        title,
+        slug,
+        description,
+        startDate,
+        endDate,
+        location,
+        ageGroup,
+        capacity,
+        price,
+        status
+      }`
+    ),
+    client.fetch(`*[_type == "settings"][0] {
+      backgroundImages
+    }`),
+  ])
 
   const formatDate = (start: string, end: string, locale: string) => {
     const startDate = new Date(start)
@@ -130,7 +135,7 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
 
   return (
     <div className="relative py-12">
-      <RotatingBackground />
+      <RotatingBackground images={settings?.backgroundImages} />
       <div className="container-custom relative z-10">
         {/* Header */}
         <div className="mb-12 text-center">

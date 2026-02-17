@@ -1,7 +1,16 @@
 import RotatingBackground from '@/components/ui/RotatingBackground'
+import { client } from '@/lib/sanity'
+import imageUrlBuilder from '@sanity/image-url'
+
+const builder = imageUrlBuilder(client)
 
 export default async function ActivitiesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
+
+  // Fetch background images from Sanity
+  const settings = await client.fetch(`*[_type == "settings"][0] {
+    backgroundImages
+  }`)
 
   const content = {
     uk: {
@@ -97,7 +106,7 @@ export default async function ActivitiesPage({ params }: { params: Promise<{ loc
 
   return (
     <div className="relative py-12">
-      <RotatingBackground />
+      <RotatingBackground images={settings?.backgroundImages} />
       <div className="container-custom relative z-10">
         {/* Header */}
         <div className="mb-12 text-center">
@@ -105,28 +114,22 @@ export default async function ActivitiesPage({ params }: { params: Promise<{ loc
           <p className="text-xl text-gray-600">{t.subtitle}</p>
         </div>
 
-        {/* Main Activities Grid */}
-        <div className="mb-16 grid gap-8 md:grid-cols-2">
-          <div className="rounded-lg border-2 border-plast-green p-6">
-            <h2 className="mb-3 text-2xl font-bold text-plast-green">{t.regular}</h2>
-            <p className="text-gray-700">{t.regularText}</p>
+        {/* Photo Gallery */}
+        {settings?.backgroundImages && settings.backgroundImages.length > 0 && (
+          <div className="mb-16">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {settings.backgroundImages.map((image: any, index: number) => (
+                <div key={index} className="overflow-hidden rounded-lg shadow-lg">
+                  <img
+                    src={builder.image(image.asset).width(800).height(600).url()}
+                    alt={image.alt || 'Plast activity'}
+                    className="h-64 w-full object-cover transition hover:scale-105"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
-
-          <div className="rounded-lg border-2 border-plast-green p-6">
-            <h2 className="mb-3 text-2xl font-bold text-plast-green">{t.camps}</h2>
-            <p className="text-gray-700">{t.campsText}</p>
-          </div>
-
-          <div className="rounded-lg border-2 border-plast-green p-6">
-            <h2 className="mb-3 text-2xl font-bold text-plast-green">{t.training}</h2>
-            <p className="text-gray-700">{t.trainingText}</p>
-          </div>
-
-          <div className="rounded-lg border-2 border-plast-green p-6">
-            <h2 className="mb-3 text-2xl font-bold text-plast-green">{t.community}</h2>
-            <p className="text-gray-700">{t.communityText}</p>
-          </div>
-        </div>
+        )}
 
         {/* Activity Schedule */}
         <div className="rounded-lg bg-gray-50 p-8">

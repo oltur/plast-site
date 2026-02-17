@@ -19,16 +19,21 @@ type Page = {
 }
 
 export default async function AboutPage({ params }: { params: Promise<{ locale: string }> }) {
-  const { locale } = await params
+  const { locale} = await params
 
-  // Fetch about page from Sanity
-  const page = await client.fetch<Page>(
-    `*[_type == "page" && slug.current == "about-us"][0] {
-      title,
-      content,
-      description
-    }`
-  )
+  // Fetch about page and settings from Sanity
+  const [page, settings] = await Promise.all([
+    client.fetch<Page>(
+      `*[_type == "page" && slug.current == "about-us"][0] {
+        title,
+        content,
+        description
+      }`
+    ),
+    client.fetch(`*[_type == "settings"][0] {
+      backgroundImages
+    }`),
+  ])
 
   const localeKey = locale as keyof LocalizedString
 
@@ -78,7 +83,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
 
   return (
     <div className="relative py-12">
-      <RotatingBackground />
+      <RotatingBackground images={settings?.backgroundImages} />
       <div className="container-custom relative z-10">
         {/* Header */}
         <div className="mb-12 text-center">

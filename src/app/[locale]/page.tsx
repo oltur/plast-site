@@ -1,5 +1,8 @@
 import Image from 'next/image'
 import { client } from '@/lib/sanity'
+import imageUrlBuilder from '@sanity/image-url'
+
+const builder = imageUrlBuilder(client)
 
 type LocalizedString = {
   uk?: string
@@ -10,6 +13,7 @@ type LocalizedString = {
 type Settings = {
   siteTitle?: LocalizedString
   siteDescription?: LocalizedString
+  backgroundImages?: any[]
 }
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
@@ -19,7 +23,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const settings = await client.fetch<Settings>(
     `*[_type == "settings"][0] {
       siteTitle,
-      siteDescription
+      siteDescription,
+      backgroundImages
     }`
   )
 
@@ -75,19 +80,19 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         <div className="container-custom">
           <div className="grid gap-8 md:grid-cols-3">
             <div className="text-center">
-              <div className="mb-4 text-5xl font-bold text-plast-green">50+</div>
+              <div className="mb-4 text-5xl font-bold text-plast-green">100+</div>
               <h3 className="text-lg font-semibold">
                 {locale === 'uk' ? 'Активних членів' : locale === 'de' ? 'Aktive Mitglieder' : 'Active Members'}
               </h3>
             </div>
             <div className="text-center">
-              <div className="mb-4 text-5xl font-bold text-plast-green">2015</div>
+              <div className="mb-4 text-5xl font-bold text-plast-green">2021</div>
               <h3 className="text-lg font-semibold">
                 {locale === 'uk' ? 'Рік заснування' : locale === 'de' ? 'Gegründet' : 'Founded'}
               </h3>
             </div>
             <div className="text-center">
-              <div className="mb-4 text-5xl font-bold text-plast-green">3</div>
+              <div className="mb-4 text-5xl font-bold text-plast-green">4</div>
               <h3 className="text-lg font-semibold">
                 {locale === 'uk' ? 'Вікові групи' : locale === 'de' ? 'Altersgruppen' : 'Age Groups'}
               </h3>
@@ -102,35 +107,49 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           <h2 className="mb-8 text-center text-3xl font-bold text-gray-900">
             {locale === 'uk' ? 'Наша діяльність' : locale === 'de' ? 'Unsere Aktivitäten' : 'Our Activities'}
           </h2>
-          <div className="grid gap-6 md:grid-cols-3">
-            <div className="overflow-hidden rounded-lg shadow-md">
-              <Image
-                src="/photos/activity-1.jpg"
-                alt={locale === 'uk' ? 'Пластові активності' : locale === 'de' ? 'Plast-Aktivitäten' : 'Plast Activities'}
-                width={600}
-                height={400}
-                className="h-64 w-full object-cover transition hover:scale-105"
-              />
+          {settings?.backgroundImages && settings.backgroundImages.length > 0 ? (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {settings.backgroundImages.map((image: any, index: number) => (
+                <div key={index} className="overflow-hidden rounded-lg shadow-lg">
+                  <img
+                    src={builder.image(image.asset).width(800).height(600).url()}
+                    alt={image.alt || 'Plast activity'}
+                    className="h-64 w-full object-cover transition hover:scale-105"
+                  />
+                </div>
+              ))}
             </div>
-            <div className="overflow-hidden rounded-lg shadow-md">
-              <Image
-                src="/photos/activity-2.jpg"
-                alt={locale === 'uk' ? 'Табір' : locale === 'de' ? 'Lager' : 'Camp'}
-                width={600}
-                height={400}
-                className="h-64 w-full object-cover transition hover:scale-105"
-              />
+          ) : (
+            <div className="grid gap-6 md:grid-cols-3">
+              <div className="overflow-hidden rounded-lg shadow-md">
+                <Image
+                  src="/photos/activity-1.jpg"
+                  alt={locale === 'uk' ? 'Пластові активності' : locale === 'de' ? 'Plast-Aktivitäten' : 'Plast Activities'}
+                  width={600}
+                  height={400}
+                  className="h-64 w-full object-cover transition hover:scale-105"
+                />
+              </div>
+              <div className="overflow-hidden rounded-lg shadow-md">
+                <Image
+                  src="/photos/activity-2.jpg"
+                  alt={locale === 'uk' ? 'Табір' : locale === 'de' ? 'Lager' : 'Camp'}
+                  width={600}
+                  height={400}
+                  className="h-64 w-full object-cover transition hover:scale-105"
+                />
+              </div>
+              <div className="overflow-hidden rounded-lg shadow-md">
+                <Image
+                  src="/photos/group-photo.png"
+                  alt={locale === 'uk' ? 'Наша команда' : locale === 'de' ? 'Unser Team' : 'Our Team'}
+                  width={600}
+                  height={400}
+                  className="h-64 w-full object-cover transition hover:scale-105"
+                />
+              </div>
             </div>
-            <div className="overflow-hidden rounded-lg shadow-md">
-              <Image
-                src="/photos/group-photo.png"
-                alt={locale === 'uk' ? 'Наша команда' : locale === 'de' ? 'Unser Team' : 'Our Team'}
-                width={600}
-                height={400}
-                className="h-64 w-full object-cover transition hover:scale-105"
-              />
-            </div>
-          </div>
+          )}
         </div>
       </section>
     </div>

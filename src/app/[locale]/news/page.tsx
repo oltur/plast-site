@@ -18,16 +18,21 @@ type Post = {
 export default async function NewsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
 
-  // Fetch posts from Sanity
-  const posts = await client.fetch<Post[]>(
-    `*[_type == "post"] | order(publishedAt desc) {
-      _id,
-      title,
-      slug,
-      excerpt,
-      publishedAt
-    }`
-  )
+  // Fetch posts and settings from Sanity
+  const [posts, settings] = await Promise.all([
+    client.fetch<Post[]>(
+      `*[_type == "post"] | order(publishedAt desc) {
+        _id,
+        title,
+        slug,
+        excerpt,
+        publishedAt
+      }`
+    ),
+    client.fetch(`*[_type == "settings"][0] {
+      backgroundImages
+    }`),
+  ])
 
   const localeKey = locale as keyof LocalizedString
 
@@ -70,7 +75,7 @@ export default async function NewsPage({ params }: { params: Promise<{ locale: s
 
   return (
     <div className="relative py-12">
-      <RotatingBackground />
+      <RotatingBackground images={settings?.backgroundImages} />
       <div className="container-custom relative z-10">
         {/* Header */}
         <div className="mb-12 text-center">

@@ -2,17 +2,37 @@
 
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
+import imageUrlBuilder from '@sanity/image-url'
+import { client } from '@/lib/sanity'
 
-const PLAST_IMAGES = [
+// Fallback images if Sanity images are not available
+const FALLBACK_IMAGES = [
   '/photos/activity-1.jpg',
   '/photos/activity-2.jpg',
   '/photos/group-photo.png',
-  '/hero-background.jpg',
 ]
 
-export default function RotatingBackground() {
+const builder = imageUrlBuilder(client)
+
+type BackgroundImage = {
+  asset: {
+    _ref: string
+  }
+  alt?: string
+}
+
+type RotatingBackgroundProps = {
+  images?: BackgroundImage[]
+}
+
+export default function RotatingBackground({ images }: RotatingBackgroundProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isClient, setIsClient] = useState(false)
+
+  // Use Sanity images if available, otherwise use fallback
+  const imageSources = images && images.length > 0
+    ? images.map(img => builder.image(img.asset).width(1920).height(1080).url())
+    : FALLBACK_IMAGES
 
   useEffect(() => {
     setIsClient(true)
@@ -22,11 +42,11 @@ export default function RotatingBackground() {
     if (!isClient) return
 
     const interval = setInterval(() => {
-      setCurrentIndex(prevIndex => (prevIndex + 1) % PLAST_IMAGES.length)
+      setCurrentIndex(prevIndex => (prevIndex + 1) % imageSources.length)
     }, 5000) // Change image every 5 seconds
 
     return () => clearInterval(interval)
-  }, [isClient])
+  }, [isClient, imageSources.length])
 
   if (!isClient) {
     return (
@@ -38,7 +58,7 @@ export default function RotatingBackground() {
 
   return (
     <div className="pointer-events-none fixed inset-0 z-0">
-      {PLAST_IMAGES.map((src, index) => (
+      {imageSources.map((src, index) => (
         <div
           key={src}
           className={`absolute inset-0 transition-opacity duration-1000 ${

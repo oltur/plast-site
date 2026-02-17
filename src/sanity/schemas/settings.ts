@@ -66,6 +66,26 @@ export default defineType({
       title: 'Footer Text',
       type: 'localizedBlock',
     }),
+    defineField({
+      name: 'backgroundImages',
+      title: 'Background Images',
+      type: 'array',
+      description: 'Images used for rotating backgrounds on About, Activities, Events, News, and Contact pages',
+      of: [
+        {
+          type: 'image',
+          options: { hotspot: true },
+          fields: [
+            {
+              name: 'alt',
+              type: 'string',
+              title: 'Alternative Text',
+            },
+          ],
+        },
+      ],
+      validation: Rule => Rule.max(10),
+    }),
   ],
   preview: {
     prepare() {

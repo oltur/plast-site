@@ -37,26 +37,23 @@ We are part of the global Ukrainian scouting organization, educating youth throu
 
 **Ukrainian:**
 ```
-- 50+ активних членів
+- 100+ активних членів
 - Заснований у 2015 році
-- Щотижневі сходини
-- 3 вікові групи
+- 4 вікові групи
 ```
 
 **German:**
 ```
-- 50+ aktive Mitglieder
+- 100+ aktive Mitglieder
 - Gegründet 2015
-- Wöchentliche Treffen
-- 3 Altersgruppen
+- 4 Altersgruppen
 ```
 
 **English:**
 ```
-- 50+ active members
+- 100+ active members
 - Founded in 2015
-- Weekly meetings
-- 3 age groups
+- 4 age groups
 ```
 
 ## About Us Page
