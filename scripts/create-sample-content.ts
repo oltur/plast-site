@@ -189,7 +189,8 @@ async function createSampleContent() {
 
   for (const doc of sampleContent) {
     try {
-      const result = await client.createOrReplace(doc)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result = await client.createOrReplace(doc as any)
       console.log(`✓ Created ${doc._type}: ${doc._id || result._id}`)
     } catch (error) {
       console.error(`✗ Failed to create ${doc._type}:`, error)
