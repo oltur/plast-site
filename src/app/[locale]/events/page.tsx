@@ -38,8 +38,16 @@ type Event = {
 // Revalidate every 60 seconds
 export const revalidate = 60
 
-export default async function EventsPage({ params }: { params: Promise<{ locale: string }> }) {
+export default async function EventsPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ locale: string }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
   const { locale } = await params
+  const { tab } = await searchParams
+  const initialTab = tab === 'past' ? 'past' : 'upcoming'
 
   const content = {
     uk: {
@@ -94,7 +102,7 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
   // Fetch events and settings from Sanity
   const [events, settings] = await Promise.all([
     client.fetch<Event[]>(
-      `*[_type == "event" && status == "published"] | order(startDate asc) {
+      `*[_type == "event" && status != "draft" && status != "cancelled"] | order(startDate asc) {
         _id,
         title,
         slug,
@@ -256,6 +264,7 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
         {/* Events Tabs */}
         <div className="mx-auto max-w-4xl">
           <EventTabs
+            initialTab={initialTab}
             upcomingLabel={t.upcomingTab}
             pastLabel={t.pastTab}
             upcomingContent={
