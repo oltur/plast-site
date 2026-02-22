@@ -42,7 +42,7 @@ export default async function ResourcesPage({ params }: { params: Promise<{ loca
   const messages = locale === 'uk' ? ukMessages : locale === 'de' ? deMessages : enMessages
   const t = (key: string) => {
     const [namespace, ...keys] = key.split('.')
-    let value = messages[namespace]
+    let value: any = messages[namespace as keyof typeof messages]
     for (const k of keys) {
       value = value?.[k]
     }

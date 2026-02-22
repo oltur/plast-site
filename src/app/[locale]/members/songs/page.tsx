@@ -41,7 +41,7 @@ export default async function SongsPage({ params }: { params: Promise<{ locale: 
   const messages = locale === 'uk' ? ukMessages : locale === 'de' ? deMessages : enMessages
   const t = (key: string) => {
     const [namespace, ...keys] = key.split('.')
-    let value = messages[namespace]
+    let value: any = messages[namespace as keyof typeof messages]
     for (const k of keys) {
       value = value?.[k]
     }
@@ -56,6 +56,8 @@ export default async function SongsPage({ params }: { params: Promise<{ locale: 
     return acc
   }, {})
 
+  // Define category order and labels
+  const categoryOrder = ['plast', 'folk', 'campfire', 'ceremonial', 'other']
   const categoryLabels: Record<string, string> = {
     plast: t('members.plastSongs'),
     folk: t('members.folkSongs'),
@@ -63,6 +65,11 @@ export default async function SongsPage({ params }: { params: Promise<{ locale: 
     ceremonial: t('members.ceremonialSongs'),
     other: t('members.otherSongs'),
   }
+
+  // Sort categories by defined order
+  const sortedCategories = categoryOrder
+    .filter(cat => songsByCategory[cat] && songsByCategory[cat].length > 0)
+    .map(cat => [cat, songsByCategory[cat]])
 
   return (
     <div className="relative min-h-screen bg-gray-50 py-12">
@@ -84,7 +91,7 @@ export default async function SongsPage({ params }: { params: Promise<{ locale: 
           <p className="text-gray-600">{t('members.noSongs')}</p>
         ) : (
           <div className="space-y-12">
-            {Object.entries(songsByCategory).map(([category, categorySongs]) => (
+            {sortedCategories.map(([category, categorySongs]) => (
               <div key={category}>
                 <h2 className="mb-6 text-2xl font-bold text-gray-900">
                   {categoryLabels[category] || category}
