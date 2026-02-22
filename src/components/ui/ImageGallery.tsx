@@ -41,7 +41,7 @@ export default function ImageGallery({ images, alt = 'Gallery image', columns = 
           <button
             key={index}
             onClick={() => handleImageClick(index)}
-            className="group relative overflow-hidden rounded-lg shadow-lg transition hover:shadow-xl"
+            className="group relative overflow-hidden rounded-lg shadow-lg transition hover:shadow-xl cursor-pointer"
           >
             <img
               src={image}
@@ -49,11 +49,6 @@ export default function ImageGallery({ images, alt = 'Gallery image', columns = 
               className="h-64 w-full object-cover transition duration-300 group-hover:scale-110"
             />
             <div className="absolute inset-0 bg-black/0 transition duration-300 group-hover:bg-black/20" />
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 transition duration-300 group-hover:opacity-100">
-              <span className="rounded-full bg-white/90 px-4 py-2 text-sm font-semibold text-gray-900">
-                {clickText}
-              </span>
-            </div>
           </button>
         ))}
       </div>
