@@ -58,10 +58,17 @@ export default async function GalleryDetailPage({
   const description = gallery.description?.[locale as keyof LocalizedString] || gallery.description?.en || gallery.description?.uk
 
   // Transform images for ImageGallery component
-  const images = gallery.images?.map((img: any) => ({
-    url: urlFor(img).width(1200).url(),
-    alt: img.caption?.[locale as keyof LocalizedString] || img.caption?.en || img.caption?.uk || title,
-  })) || []
+  const images = gallery.images
+    ?.filter((img: any) => img?.asset)
+    .map((img: any) => {
+      try {
+        return urlFor(img).width(1200).url()
+      } catch (error) {
+        console.error('Error generating image URL:', error)
+        return null
+      }
+    })
+    .filter(Boolean) || []
 
   return (
     <div className="relative min-h-screen bg-gray-50 py-12">
@@ -89,7 +96,7 @@ export default async function GalleryDetailPage({
           )}
         </div>
 
-        <ImageGallery images={images} />
+        <ImageGallery images={images} alt={title} locale={locale} />
       </div>
     </div>
   )
