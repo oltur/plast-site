@@ -169,7 +169,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   events: {
     async signIn({ isNewUser }) {
       // Optional: Log successful sign-ins
-      return true
     },
   },
   session: {
