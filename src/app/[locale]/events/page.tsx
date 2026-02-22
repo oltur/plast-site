@@ -2,6 +2,7 @@ import { client } from '@/lib/sanity'
 import { PortableText } from '@portabletext/react'
 import RotatingBackground from '@/components/ui/RotatingBackground'
 import EventMap from '@/components/ui/EventMap'
+import EventTabs from '@/components/ui/EventTabs'
 
 type LocalizedString = {
   uk?: string
@@ -43,9 +44,13 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
   const content = {
     uk: {
       title: 'Події',
-      subtitle: 'Наші майбутні заходи',
+      subtitle: 'Наші заходи',
+      upcomingTab: 'Майбутні події',
+      pastTab: 'Минулі події',
       comingSoon: 'Скоро',
+      completed: 'Завершено',
       noEvents: 'На даний момент немає запланованих подій. Слідкуйте за оновленнями!',
+      noPastEvents: 'Минулих подій поки що немає.',
       ageLabel: 'Вік',
       capacityLabel: 'Місць',
       priceLabel: 'Вартість',
@@ -54,9 +59,13 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
     },
     de: {
       title: 'Veranstaltungen',
-      subtitle: 'Unsere kommenden Events',
+      subtitle: 'Unsere Events',
+      upcomingTab: 'Kommende Events',
+      pastTab: 'Vergangene Events',
       comingSoon: 'Demnächst',
+      completed: 'Abgeschlossen',
       noEvents: 'Derzeit sind keine Veranstaltungen geplant. Bleiben Sie dran!',
+      noPastEvents: 'Es gibt noch keine vergangenen Veranstaltungen.',
       ageLabel: 'Alter',
       capacityLabel: 'Plätze',
       priceLabel: 'Kosten',
@@ -65,9 +74,13 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
     },
     en: {
       title: 'Events',
-      subtitle: 'Our Upcoming Activities',
+      subtitle: 'Our Activities',
+      upcomingTab: 'Upcoming Events',
+      pastTab: 'Past Events',
       comingSoon: 'Coming Soon',
+      completed: 'Completed',
       noEvents: 'No events are currently planned. Stay tuned for updates!',
+      noPastEvents: 'No past events yet.',
       ageLabel: 'Age',
       capacityLabel: 'Spots',
       priceLabel: 'Cost',
@@ -136,6 +149,100 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
     return labels[ageGroup]?.[locale as keyof typeof labels.cubs] || ageGroup
   }
 
+  // Split events into upcoming and past
+  const now = new Date()
+  const upcomingEvents = events.filter(event => new Date(event.endDate) >= now)
+  const pastEvents = events.filter(event => new Date(event.endDate) < now).reverse() // Most recent first
+
+  // Helper function to render event list
+  const renderEventList = (eventList: Event[], isPast: boolean) => {
+    const eventLocale = locale as keyof LocalizedString
+    const badgeText = isPast ? t.completed : t.comingSoon
+    const badgeColor = isPast ? 'bg-gray-400' : 'bg-plast-yellow'
+
+    return (
+      <div className="space-y-6">
+        {eventList.map(event => {
+          const title = event.title?.[eventLocale] || event.title?.en || ''
+          const locationName = event.location?.name?.[eventLocale] || event.location?.name?.en || ''
+          const description = event.description?.[eventLocale]
+
+          return (
+            <div key={event._id} className="overflow-hidden rounded-lg border-2 border-plast-green shadow-lg">
+              <div className="bg-plast-green p-4">
+                <span className={`inline-block rounded ${badgeColor} px-3 py-1 text-sm font-semibold text-gray-900`}>
+                  {badgeText}
+                </span>
+              </div>
+              <div className="p-6">
+                <h2 className="mb-3 text-2xl font-bold text-gray-900">{title}</h2>
+                <div className="mb-4 space-y-2 text-gray-700">
+                  <p className="flex items-center">
+                    <span className="mr-2 font-semibold">📅</span>{' '}
+                    {formatDate(event.startDate, event.endDate, locale)}
+                  </p>
+                  {locationName && (
+                    <p className="flex items-center">
+                      <span className="mr-2 font-semibold">📍</span> {locationName}
+                    </p>
+                  )}
+                </div>
+                {description && (
+                  <div className="mb-4 prose prose-sm max-w-none text-gray-700">
+                    <PortableText value={description} />
+                  </div>
+                )}
+                {event.location && (
+                  <EventMap
+                    location={{
+                      name: event.location.name?.[eventLocale] || event.location.name?.en,
+                      address: event.location.address,
+                      coordinates: event.location.coordinates,
+                    }}
+                    locale={locale}
+                  />
+                )}
+                <div className="mt-4 grid gap-2 border-t pt-4 md:grid-cols-3">
+                  {event.ageGroup && (
+                    <div>
+                      <p className="text-sm font-semibold text-gray-600">
+                        {t.ageLabel}: {getAgeGroupLabel(event.ageGroup)}
+                      </p>
+                    </div>
+                  )}
+                  {event.capacity && (
+                    <div>
+                      <p className="text-sm font-semibold text-gray-600">
+                        {t.capacityLabel}: {event.capacity}
+                      </p>
+                    </div>
+                  )}
+                  {event.price !== undefined && (
+                    <div>
+                      <p className="text-sm font-semibold text-gray-600">
+                        {t.priceLabel}: €{event.price}
+                      </p>
+                    </div>
+                  )}
+                </div>
+                {!isPast && (
+                  <div className="mt-6">
+                    <a
+                      href={`/${locale}/contact`}
+                      className="inline-block rounded-lg bg-plast-green px-6 py-3 font-semibold text-white transition hover:bg-plast-green-dark"
+                    >
+                      {t.register}
+                    </a>
+                  </div>
+                )}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    )
+  }
+
   return (
     <div className="relative py-12">
       <RotatingBackground images={settings?.backgroundImages} />
@@ -146,95 +253,36 @@ export default async function EventsPage({ params }: { params: Promise<{ locale:
           <p className="text-xl text-gray-600">{t.subtitle}</p>
         </div>
 
-        {/* Events List */}
-        <div className="mx-auto max-w-4xl space-y-6">
-          {events.length === 0 ? (
-            <div className="rounded-lg bg-gray-50 p-8 text-center">
-              <p className="text-gray-600">{t.noEvents}</p>
-            </div>
-          ) : (
-            events.map(event => {
-              const eventLocale = locale as keyof LocalizedString
-              const title = event.title?.[eventLocale] || event.title?.en || ''
-              const locationName = event.location?.name?.[eventLocale] || event.location?.name?.en || ''
-              const description = event.description?.[eventLocale]
-
-              return (
-                <div key={event._id} className="overflow-hidden rounded-lg border-2 border-plast-green shadow-lg">
-                  <div className="bg-plast-green p-4">
-                    <span className="inline-block rounded bg-plast-yellow px-3 py-1 text-sm font-semibold text-gray-900">
-                      {t.comingSoon}
-                    </span>
+        {/* Events Tabs */}
+        <div className="mx-auto max-w-4xl">
+          <EventTabs
+            upcomingLabel={t.upcomingTab}
+            pastLabel={t.pastTab}
+            upcomingContent={
+              <>
+                {upcomingEvents.length === 0 ? (
+                  <div className="rounded-lg bg-gray-50 p-8 text-center">
+                    <p className="text-gray-600">{t.noEvents}</p>
                   </div>
-                  <div className="p-6">
-                    <h2 className="mb-3 text-2xl font-bold text-gray-900">{title}</h2>
-                    <div className="mb-4 space-y-2 text-gray-700">
-                      <p className="flex items-center">
-                        <span className="mr-2 font-semibold">📅</span>{' '}
-                        {formatDate(event.startDate, event.endDate, locale)}
-                      </p>
-                      {locationName && (
-                        <p className="flex items-center">
-                          <span className="mr-2 font-semibold">📍</span> {locationName}
-                        </p>
-                      )}
-                    </div>
-                    {description && (
-                      <div className="mb-4 prose prose-sm max-w-none text-gray-700">
-                        <PortableText value={description} />
-                      </div>
-                    )}
-                    {event.location && (
-                      <EventMap
-                        location={{
-                          name: event.location.name?.[eventLocale] || event.location.name?.en,
-                          address: event.location.address,
-                          coordinates: event.location.coordinates,
-                        }}
-                        locale={locale}
-                      />
-                    )}
-                    <div className="mt-4 grid gap-2 border-t pt-4 md:grid-cols-3">
-                      {event.ageGroup && (
-                        <div>
-                          <p className="text-sm font-semibold text-gray-600">
-                            {t.ageLabel}: {getAgeGroupLabel(event.ageGroup)}
-                          </p>
-                        </div>
-                      )}
-                      {event.capacity && (
-                        <div>
-                          <p className="text-sm font-semibold text-gray-600">
-                            {t.capacityLabel}: {event.capacity}
-                          </p>
-                        </div>
-                      )}
-                      {event.price !== undefined && (
-                        <div>
-                          <p className="text-sm font-semibold text-gray-600">
-                            {t.priceLabel}: €{event.price}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                    <div className="mt-6">
-                      <a
-                        href={`/${locale}/contact`}
-                        className="inline-block rounded-lg bg-plast-green px-6 py-3 font-semibold text-white transition hover:bg-plast-green-dark"
-                      >
-                        {t.register}
-                      </a>
-                    </div>
-                  </div>
+                ) : (
+                  renderEventList(upcomingEvents, false)
+                )}
+                {/* Info Box */}
+                <div className="mt-8 rounded-lg bg-gray-50 p-6 text-center">
+                  <p className="text-gray-600">{t.moreEvents}</p>
                 </div>
+              </>
+            }
+            pastContent={
+              pastEvents.length === 0 ? (
+                <div className="rounded-lg bg-gray-50 p-8 text-center">
+                  <p className="text-gray-600">{t.noPastEvents}</p>
+                </div>
+              ) : (
+                renderEventList(pastEvents, true)
               )
-            })
-          )}
-
-          {/* Info Box */}
-          <div className="mt-8 rounded-lg bg-gray-50 p-6 text-center">
-            <p className="text-gray-600">{t.moreEvents}</p>
-          </div>
+            }
+          />
         </div>
       </div>
     </div>
