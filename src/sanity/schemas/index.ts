@@ -7,6 +7,10 @@ import legalPage from './legalPage'
 import teamMember from './teamMember'
 import settings from './settings'
 import formSubmission from './formSubmission'
+import user from './user'
+import resource from './resource'
+import song from './song'
+import photoGallery from './photoGallery'
 
 export const schemaTypes = [
   // Objects
@@ -23,4 +27,8 @@ export const schemaTypes = [
   teamMember,
   settings,
   formSubmission,
+  user,
+  resource,
+  song,
+  photoGallery,
 ]
