@@ -1,4 +1,5 @@
 import NextAuth, { DefaultSession } from 'next-auth'
+import type { JWT } from 'next-auth/jwt'
 import Credentials from 'next-auth/providers/credentials'
 import Google from 'next-auth/providers/google'
 import { client } from '@/lib/sanity'
@@ -25,6 +26,9 @@ declare module 'next-auth' {
 
 declare module 'next-auth/jwt' {
   interface JWT {
+    id?: string
+    role?: string
+    ageGroup?: string
     accessToken?: string
     refreshToken?: string
     accessTokenExpires?: number
@@ -173,6 +177,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         token.id = user.id
         token.role = user.role
         token.ageGroup = user.ageGroup
+      }
+
+      // For Google login, fetch role from Sanity if not already set
+      if (account?.provider === 'google' && token.email && !token.role) {
+        const sanityUser = await client.fetch(
+          `*[_type == "user" && email == $email][0] { _id, role, ageGroup }`,
+          { email: token.email }
+        )
+        if (sanityUser) {
+          token.id = sanityUser._id
+          token.role = sanityUser.role
+          token.ageGroup = sanityUser.ageGroup
+        }
       }
 
       // Store Google OAuth tokens

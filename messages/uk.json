@@ -129,7 +129,10 @@
     "listenOnline": "Слухати онлайн",
     "noGalleries": "Наразі немає галерей.",
     "photos": "фото",
-    "backToGalleries": "Назад до галерей"
+    "backToGalleries": "Назад до галерей",
+    "adminTools": "Інструменти адміністратора",
+    "adminAccess": "Інструменти управління для адміністраторів",
+    "calendarManagement": "Управління календарем Google"
   },
   "errors": {
     "authError": "Помилка автентифікації",

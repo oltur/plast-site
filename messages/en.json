@@ -129,7 +129,10 @@
     "listenOnline": "Listen Online",
     "noGalleries": "No galleries available at the moment.",
     "photos": "photos",
-    "backToGalleries": "Back to Galleries"
+    "backToGalleries": "Back to Galleries",
+    "adminTools": "Admin Tools",
+    "adminAccess": "Management tools for administrators",
+    "calendarManagement": "Google Calendar Management"
   },
   "errors": {
     "authError": "Authentication Error",

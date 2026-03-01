@@ -1,6 +1,7 @@
 import { auth } from '@/lib/auth'
 import { redirect } from 'next/navigation'
 import { client } from '@/lib/sanity'
+import Link from 'next/link'
 import ukMessages from '../../../../messages/uk.json'
 import deMessages from '../../../../messages/de.json'
 import enMessages from '../../../../messages/en.json'
@@ -198,6 +199,22 @@ export default async function MembersPage({ params }: { params: Promise<{ locale
                 </a>
               </div>
             </div>
+
+            {/* Admin Section */}
+            {userProfile?.role === 'admin' && (
+              <div className="rounded-lg bg-plast-green/20 p-6 shadow-md border-2 border-plast-green">
+                <h2 className="mb-2 text-xl font-bold text-gray-900">⚙️ {t('members.adminTools')}</h2>
+                <p className="mb-4 text-gray-700">{t('members.adminAccess')}</p>
+                <div className="space-y-2">
+                  <Link
+                    href={`/${locale}/admin/calendar`}
+                    className="block rounded-md bg-white px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-plast-green"
+                  >
+                    📅 {t('members.calendarManagement')}
+                  </Link>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

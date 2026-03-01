@@ -129,7 +129,10 @@
     "listenOnline": "Online anhören",
     "noGalleries": "Derzeit keine Galerien verfügbar.",
     "photos": "Fotos",
-    "backToGalleries": "Zurück zu den Galerien"
+    "backToGalleries": "Zurück zu den Galerien",
+    "adminTools": "Admin-Tools",
+    "adminAccess": "Verwaltungstools für Administratoren",
+    "calendarManagement": "Google Kalender-Verwaltung"
   },
   "errors": {
     "authError": "Authentifizierungsfehler",
