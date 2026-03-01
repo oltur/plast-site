@@ -1,5 +1,3 @@
-import { auth } from '@/lib/auth'
-import { redirect } from 'next/navigation'
 import { client } from '@/lib/sanity'
 import Link from 'next/link'
 import { Download, Play } from 'lucide-react'
@@ -15,12 +13,27 @@ type LocalizedString = {
 }
 
 export default async function SongsPage({ params }: { params: Promise<{ locale: string }> }) {
-  const session = await auth()
   const { locale } = await params
 
-  if (!session?.user) {
-    redirect(`/${locale}/auth/signin`)
+  const pageContent = {
+    uk: {
+      backToActivities: '← Назад до діяльності',
+      title: '🎵 Пісні та ресурси',
+      noSongs: 'Наразі немає пісень.',
+    },
+    de: {
+      backToActivities: '← Zurück zu Aktivitäten',
+      title: '🎵 Lieder und Ressourcen',
+      noSongs: 'Derzeit sind keine Lieder verfügbar.',
+    },
+    en: {
+      backToActivities: '← Back to Activities',
+      title: '🎵 Songs and Resources',
+      noSongs: 'No songs available yet.',
+    },
   }
+
+  const content = pageContent[locale as keyof typeof pageContent] || pageContent.uk
 
   // Fetch songs
   const songs = await client.fetch(
@@ -76,19 +89,19 @@ export default async function SongsPage({ params }: { params: Promise<{ locale: 
       <div className="container-custom relative z-10">
         <div className="mb-6">
           <Link
-            href={`/${locale}/members`}
+            href={`/${locale}/activities`}
             className="text-plast-green hover:text-plast-green-dark"
           >
-            ← {t('members.backToMembers')}
+            {content.backToActivities}
           </Link>
         </div>
 
         <h1 className="mb-8 text-3xl font-bold text-gray-900">
-          🎵 {t('members.songsResources')}
+          {content.title}
         </h1>
 
         {songs.length === 0 ? (
-          <p className="text-gray-600">{t('members.noSongs')}</p>
+          <p className="text-gray-600">{content.noSongs}</p>
         ) : (
           <div className="space-y-12">
             {sortedCategories.map(([category, categorySongs]) => (

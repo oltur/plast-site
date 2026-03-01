@@ -191,12 +191,6 @@ export default async function MembersPage({ params }: { params: Promise<{ locale
                   📋 {t('members.formsDocs')}
                 </a>
                 <a
-                  href={`/${locale}/members/songs`}
-                  className="block rounded-md bg-white px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-plast-green"
-                >
-                  🎵 {t('members.songsResources')}
-                </a>
-                <a
                   href={`/${locale}/members/galleries`}
                   className="block rounded-md bg-white px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-plast-green"
                 >

@@ -12,12 +12,22 @@ declare module 'next-auth' {
       role: string
       ageGroup?: string
     } & DefaultSession['user']
+    accessToken?: string
+    refreshToken?: string
   }
 
   interface User {
     id: string
     role: string
     ageGroup?: string
+  }
+}
+
+declare module 'next-auth/jwt' {
+  interface JWT {
+    accessToken?: string
+    refreshToken?: string
+    accessTokenExpires?: number
   }
 }
 
@@ -84,6 +94,19 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      authorization: {
+        params: {
+          scope: [
+            'openid',
+            'https://www.googleapis.com/auth/userinfo.email',
+            'https://www.googleapis.com/auth/userinfo.profile',
+            'https://www.googleapis.com/auth/drive.file',
+            'https://www.googleapis.com/auth/calendar.events',
+          ].join(' '),
+          access_type: 'offline',
+          prompt: 'consent',
+        },
+      },
     })
   )
 }
@@ -145,12 +168,20 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
       return true
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
       if (user) {
         token.id = user.id
         token.role = user.role
         token.ageGroup = user.ageGroup
       }
+
+      // Store Google OAuth tokens
+      if (account) {
+        token.accessToken = account.access_token
+        token.refreshToken = account.refresh_token
+        token.accessTokenExpires = account.expires_at ? account.expires_at * 1000 : undefined
+      }
+
       return token
     },
     async session({ session, token }) {
@@ -158,6 +189,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         session.user.id = token.id as string
         session.user.role = token.role as string
         session.user.ageGroup = token.ageGroup as string | undefined
+        session.accessToken = token.accessToken as string | undefined
+        session.refreshToken = token.refreshToken as string | undefined
       }
       return session
     },

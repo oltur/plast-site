@@ -3,6 +3,7 @@ import ImageGallery from '@/components/ui/ImageGallery'
 import { client } from '@/lib/sanity'
 import imageUrlBuilder from '@sanity/image-url'
 import { PortableText } from '@portabletext/react'
+import Link from 'next/link'
 
 const builder = imageUrlBuilder(client)
 
@@ -61,18 +62,27 @@ export default async function ActivitiesPage({ params }: { params: Promise<{ loc
       subtitle: 'Чим ми займаємося',
       readMore: 'Детальніше',
       photoGallery: 'Фотогалерея',
+      songsTitle: 'Пісні та ресурси',
+      songsDescription: 'Відкрийте для себе пластові пісні, народні пісні та пісні біля вогнища',
+      viewSongs: 'Переглянути пісні',
     },
     de: {
       title: 'Unsere Aktivitäten',
       subtitle: 'Was wir tun',
       readMore: 'Mehr erfahren',
       photoGallery: 'Fotogalerie',
+      songsTitle: 'Lieder und Ressourcen',
+      songsDescription: 'Entdecken Sie Plast-Lieder, Volkslieder und Lagerfeuerlieder',
+      viewSongs: 'Lieder ansehen',
     },
     en: {
       title: 'Our Activities',
       subtitle: 'What We Do',
       readMore: 'Read More',
       photoGallery: 'Photo Gallery',
+      songsTitle: 'Songs and Resources',
+      songsDescription: 'Discover Plast songs, folk songs, and campfire songs',
+      viewSongs: 'View Songs',
     },
   }
 
@@ -137,6 +147,20 @@ export default async function ActivitiesPage({ params }: { params: Promise<{ loc
             )
           })}
         </div>
+
+        {/* Songs Callout */}
+        <Link href={`/${locale}/activities/songs`} className="mt-12 block">
+          <div className="overflow-hidden rounded-lg bg-gradient-to-r from-plast-green to-plast-green-dark shadow-lg transition hover:shadow-xl">
+            <div className="p-8 text-center">
+              <div className="mb-3 text-5xl">🎵</div>
+              <h2 className="mb-2 text-2xl font-bold text-white">{t.songsTitle}</h2>
+              <p className="mb-4 text-plast-yellow">{t.songsDescription}</p>
+              <span className="inline-block rounded-lg bg-white px-6 py-2 font-medium text-plast-green transition hover:bg-plast-yellow hover:text-gray-900">
+                {t.viewSongs} →
+              </span>
+            </div>
+          </div>
+        </Link>
       </div>
     </div>
   )
